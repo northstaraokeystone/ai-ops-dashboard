@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from api.schemas.integrity import IntegrityRequest, IntegrityResponse
-from api.services.integrity_service import validate_data_integrity
+from schemas.integrity import IntegrityRequest, IntegrityResponse
+from services.integrity_service import validate_data_integrity
 
 router = APIRouter(prefix="/api/integrity", tags=["Data Integrity"])
 
