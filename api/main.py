@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routers import integrity, gpu, roi
+from routers import integrity, gpu, roi
 
 app = FastAPI(
     title="AI Operations API",
