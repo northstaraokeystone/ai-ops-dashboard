@@ -33,28 +33,10 @@ This system is built on a three-layer trust stack, demonstrated through three co
 ---
 
 ### Status & Live Demo
--   **Backend API:** Deployed via Render (Coming Soon)
--   **Frontend Dashboard:** Deployed via Cloudflare Pages (Coming Soon)
--   **Current State:** Fully functional on `localhost`. See "Usage" to run it yourself.
+-   **Backend API:** Deployed via Render (LIVE)
+-   **Frontend Dashboard:** Deployed via Cloudflare Pages (ai-trust-fabric.northstaraokeystone.com)
 
 ---
-
-### Usage (Local Development)
-
-This project requires two terminals to run simultaneously.
-
-**1. Start the Backend (FastAPI Server):**
-   ```bash
-   # In Terminal 1
-   cd ai-ops-dashboard
-   conda activate ai-ops
-   uvicorn api.main:app --reload
-   # Server will be running at http://127.0.0.1:8000
-2. View the Frontend (Dashboard):
-
-Navigate to the public/ directory in your file explorer.
-Open the index.html file in your web browser.
-The dashboard will be available and will connect to the running backend.
 The Vision: AGI-Adjacent Governance
 This project is the first step towards a larger vision: building the constitutional framework for autonomous AI. As AI moves from tools to agents, our role shifts from monitoring to governance—setting the economic, ethical, and operational boundaries within which AI is permitted to optimize.
 
