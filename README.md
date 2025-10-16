@@ -68,3 +68,5 @@ Keep it Sacred: Authoritative. Transcendent. Infinite.
 
 This project is an artifact of my work at the W. P. Carey School of Business, Arizona State University, MS AIB.
 
+MVP is live.
+
