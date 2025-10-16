@@ -21,6 +21,4 @@ jobs:
           pip install -r api/requirements.txt
           pip install pytest
       - name: Run tests
-        run: |
-          cd api
-          pytest
+  	run: python -m pytest
