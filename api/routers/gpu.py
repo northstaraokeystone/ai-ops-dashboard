@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from api.schemas.gpu import GPUAnalysisRequest, GPUAnalysisResponse
-from api.services.gpu_service import analyze_gpu_efficiency
+from schemas.gpu import GPUAnalysisRequest, GPUAnalysisResponse
+from services.gpu_service import analyze_gpu_efficiency
 
 router = APIRouter(prefix="/api/gpu", tags=["GPU Efficiency"])
 
