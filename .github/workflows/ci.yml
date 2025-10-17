@@ -22,12 +22,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r api/requirements.txt
+          # THIS PATH IS NOW CORRECTED
+          pip install -r requirements.txt
           pip install pytest
 
       - name: Run tests
-        # This block securely loads the database URL from your GitHub repository's secrets.
-        # It makes the DATABASE_URL available as an environment variable for the test run.
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python -m pytest
