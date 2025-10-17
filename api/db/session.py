@@ -3,15 +3,28 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from api.core.config import settings
 
-# Create the engine once, using the URL from our central settings
-engine = create_engine(settings.DATABASE_URL)
+# --- LAZY INITIALIZATION PATTERN ---
+# Define as None at the module level.
+engine = None
+SessionLocal = None
 
-# Create the Session factory
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
-# This is the dependency that our routers will use
 def get_db():
+    """
+    This is a FastAPI dependency that provides a database session.
+    It handles the creation of the engine and session factory on the first call.
+    """
+    global engine, SessionLocal
+
+    # Initialize only once, on the first request that needs a DB.
+    if engine is None:
+        engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+        # This is where you would create tables, for a real test setup
+        # from api.db.base_class import Base
+        # Base.metadata.create_all(bind=engine)
+
     db = SessionLocal()
     try:
         yield db
