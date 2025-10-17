@@ -38,3 +38,19 @@ def client():
     """Create a TestClient for making API requests."""
     with TestClient(app) as c:
         yield c
+
+
+# ... (keep the existing fixtures at the top)
+
+
+@pytest.fixture(scope="module")
+def valid_payload() -> dict:
+    """Provides a standard, valid payload for interaction tests."""
+    return {
+        "action_type": 1,
+        "agent_id": "e8c80c0e-05a9-4ffe-9731-9389a7c7317a",
+        "causality_id": "c4dfaf30-1472-4bc2-aae9-919983955bac",
+        "environment_hash": "test_environment_hash_final",
+        "session_id": "s-12345-final",
+        "details": {"message": "Final test successful."},
+    }
