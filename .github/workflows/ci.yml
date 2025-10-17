@@ -10,20 +10,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # This new "services" block starts a temporary PostgreSQL database
-    # that runs alongside your tests.
     services:
       postgres:
         image: postgres:16-alpine
-        # These credentials are only for this temporary test database
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpassword
           POSTGRES_DB: testdb
-        # This healthcheck ensures the tests don't start until the
-        # database is fully ready to accept connections.
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U testuser"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -46,10 +41,7 @@ jobs:
 
       - name: Run tests
         env:
-          # IMPORTANT: We override the DATABASE_URL to connect to the
-          # temporary service container, not "localhost".
           DATABASE_URL: "postgresql://testuser:testpassword@postgres:5432/testdb"
-          # We still load the other secrets for your application logic
           NAOK_FULCRUM_PRIME_KEY: ${{ secrets.NAOK_FULCRUM_PRIME_KEY }}
           NAOK_FULCRUM_SALT: ${{ secrets.NAOK_FULCRUM_SALT }}
         run: python -m pytest
