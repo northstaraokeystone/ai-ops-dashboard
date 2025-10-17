@@ -1,31 +1,23 @@
-# api/schemas/interaction.py
-
-from typing import Any, Dict, Optional
-from uuid import UUID
-
+# In api/schemas/interaction.py
+import uuid
 from pydantic import BaseModel
+from typing import Dict, Any
+from datetime import datetime
 
 
 class InteractionCreate(BaseModel):
-    """
-    Pydantic model for creating a new interaction log entry.
-
-    This model validates the input data from the API request.
-    """
-
-    agent_id: UUID
-    environment_hash: str
-    causality_id: Optional[UUID] = None
     action_type: int
-    payload: Dict[str, Any]
+    agent_id: uuid.UUID
+    causality_id: uuid.UUID
+    environment_hash: str
+    session_id: str
+    details: Dict[str, Any]
 
 
-class InteractionResponse(BaseModel):
-    """
-    Pydantic model for the response after processing an interaction log.
+class InteractionRead(BaseModel):
+    id: uuid.UUID
+    canonical_hash: str
+    timestamp: datetime
 
-    This model defines the structure of the API response.
-    """
-
-    id: UUID
-    status: str
+    class Config:
+        from_attributes = True
