@@ -1,13 +1,16 @@
-# In api/services/interaction.py
 from sqlalchemy.orm import Session
+from typing import Tuple
 from api.services.cryptography_service import CryptographyService
 from api.db.models.interaction import Interaction as InteractionModel
 from api.schemas.interaction import InteractionCreate
 
 
-def create_interaction(db: Session, interaction: InteractionCreate) -> InteractionModel:
+def create_interaction(
+    db: Session, interaction: InteractionCreate
+) -> Tuple[InteractionModel, bool]:
     """
-    Creates a new interaction event, generates its hash, and saves it to the database.
+    Creates a new interaction or returns an existing one (idempotency).
+    Returns a tuple of (interaction_model, created_boolean).
     """
     interaction_data = interaction.model_dump()
     canonical_hash = CryptographyService.generate_hash(interaction_data)
@@ -18,7 +21,7 @@ def create_interaction(db: Session, interaction: InteractionCreate) -> Interacti
         .first()
     )
     if db_interaction:
-        return db_interaction
+        return db_interaction, False  # Found existing, so created=False
 
     new_interaction = InteractionModel(
         **interaction_data, canonical_hash=canonical_hash
@@ -27,4 +30,4 @@ def create_interaction(db: Session, interaction: InteractionCreate) -> Interacti
     db.commit()
     db.refresh(new_interaction)
 
-    return new_interaction
+    return new_interaction, True  # Created new, so created=True
