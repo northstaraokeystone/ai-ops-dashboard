@@ -5,18 +5,17 @@ from starlette.testclient import TestClient
 
 from api.core.config import settings
 from api.main import app
-
-# You'll need to add this import for your database models
-# from api.db.base import Base
+from api.db.base_class import Base  # Import the Base
 
 # Override the DATABASE_URL for a fast, in-memory SQLite test database
 TEST_SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 settings.DATABASE_URL = TEST_SQLALCHEMY_DATABASE_URL
 
 engine = create_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False})
-# This line below creates the tables in the test database.
-# We will need to create and import 'Base' from your SQLAlchemy models.
-# Base.metadata.create_all(bind=engine)
+
+# --- THE FIX IS HERE ---
+# Create all tables defined in our models in the test database.
+Base.metadata.create_all(bind=engine)
 
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -36,13 +35,17 @@ def db_session():
 @pytest.fixture(scope="module")
 def client():
     """Create a TestClient for making API requests."""
-    with TestClient(app) as c:
-        yield c
+    # This line below ensures that our Base.metadata.create_all() is run
+    # before any tests use the client.
+    yield TestClient(app)
+    # Clean up the test database file after all tests in the module are done.
+    import os
+
+    if os.path.exists("./test.db"):
+        os.remove("./test.db")
 
 
-# ... (keep the existing fixtures at the top)
-
-
+# And your valid_payload fixture
 @pytest.fixture(scope="module")
 def valid_payload() -> dict:
     """Provides a standard, valid payload for interaction tests."""
