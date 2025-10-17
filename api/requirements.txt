@@ -2,9 +2,9 @@ fastapi
 httpx
 uvicorn[standard]
 pydantic
+pydantic-settings
 pandas
 scikit-learn
 shap
 SQLAlchemy
 psycopg2-binary
-pydantic-settings
