@@ -1,23 +1,26 @@
+# docker-compose.yaml
+
 version: '3.8'
 
 services:
   db:
-    image: postgres:16-alpine
-    container_name: fulcrum_db
+    image: postgres:16  # Use a stable, recent PostgreSQL version (2025 context: 16 is mature)
+    container_name: fulcrum_db  # Consistent naming for easy management
+    restart: always  # Ensures resilience: auto-restart on failure
     environment:
-      - POSTGRES_USER=fulcrum_user
-      - POSTGRES_PASSWORD=fulcrum_pass
-      - POSTGRES_DB=fulcrum_ledger
+      POSTGRES_USER: fulcrum_user  # Align with secure, app-specific user
+      POSTGRES_PASSWORD: fulcrum_pass  # Secure password; in production, use secrets
+      POSTGRES_DB: fulcrum_db  # Dedicated database name
     ports:
-      - "5432:5432"
+      - "5432:5432"  # Expose port for local connections
     volumes:
-      - ./api/database:/docker-entrypoint-initdb.d
-      - fulcrum_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data  # Persistent volume for data recovery
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fulcrum_user -d fulcrum_ledger"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 10s  # Grace period for initial startup
 
 volumes:
-  fulcrum_data:
+  pgdata:  # Named volume for persistence across container restarts
