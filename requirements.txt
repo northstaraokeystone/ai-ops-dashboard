@@ -3,3 +3,6 @@ uvicorn
 pydantic-settings
 alembic
 psycopg2-binary
+SQLAlchemy
+
+# A comment to force an update
