@@ -1,49 +1,37 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from api.core.config import settings
-
-# --- LAZY INITIALIZATION PATTERN ---
-# We define the engine and SessionLocal as None at the module level.
-engine = None
-SessionLocal = None
+from sqlalchemy.orm import Session
+from api.services.cryptography_service import CryptographyService
+from api.db.models.interaction import (
+    Interaction as InteractionModel,
+)  # We will create this model next
+from api.schemas.interaction import InteractionCreate
 
 
-def get_db_session():
+def create_interaction(db: Session, interaction: InteractionCreate) -> InteractionModel:
     """
-    Creates and returns a new database session.
-    The engine is initialized here, only on the first call.
+    Creates a new interaction event, generates its hash, and saves it to the database.
     """
-    global engine, SessionLocal
+    # 1. Convert the Pydantic model to a dictionary for hashing
+    interaction_data = interaction.model_dump()
 
-    # Initialize the engine only if it hasn't been already.
-    if engine is None:
-        engine = create_engine(settings.DATABASE_URL)
-        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-        # In a full setup, you would create tables here if they don't exist:
-        # Base.metadata.create_all(bind=engine)
+    # 2. Generate the deterministic hash
+    canonical_hash = CryptographyService.generate_hash(interaction_data)
 
-    # Return a new session from the session factory.
-    return SessionLocal()
+    # 3. Check for existing hash for idempotency
+    db_interaction = (
+        db.query(InteractionModel)
+        .filter(InteractionModel.canonical_hash == canonical_hash)
+        .first()
+    )
+    if db_interaction:
+        # If it exists, return the existing record
+        return db_interaction
 
+    # 4. Create a new SQLAlchemy model instance and save it
+    new_interaction = InteractionModel(
+        **interaction_data, canonical_hash=canonical_hash
+    )
+    db.add(new_interaction)
+    db.commit()
+    db.refresh(new_interaction)
 
-# --- Your existing create_interaction function ---
-# It now needs to get a session to work with.
-def create_interaction(interaction_data: dict):
-    """
-    This is your business logic function.
-    It should now get a database session and use it.
-    """
-    db_session = get_db_session()
-    try:
-        # Example: Create a new object and add it to the database
-        # new_interaction = YourDBModel(**interaction_data)
-        # db_session.add(new_interaction)
-        # db_session.commit()
-        # db_session.refresh(new_interaction)
-        # return new_interaction
-
-        # For now, just return a success message
-        return {"status": "success", "info": "Database session created."}
-    finally:
-        db_session.close()
+    return new_interaction
