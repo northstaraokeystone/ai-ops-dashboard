@@ -32,5 +32,5 @@ async def root():
 
 @app.get("/health")
 async def health():
-    secrets_loaded = bool(settings.naok_fulcrum_prime_key)
+    secrets_loaded = bool(settings.NAOK_FULCRUM_PRIME_KEY)
     return {"status": "healthy", "secrets_loaded": secrets_loaded}
