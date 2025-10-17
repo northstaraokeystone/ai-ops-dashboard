@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
-from schemas.gpu import GPUAnalysisRequest, GPUAnalysisResponse
-from services.gpu_service import analyze_gpu_efficiency
+from ..schemas.gpu import GPUAnalysisRequest, GPUAnalysisResponse
+from ..services.gpu_service import analyze_gpu_efficiency
 
 router = APIRouter(prefix="/api/gpu", tags=["GPU Efficiency"])
+
 
 @router.post("/analyze", response_model=GPUAnalysisResponse)
 async def analyze(request: GPUAnalysisRequest):

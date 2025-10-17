@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+pydantic-settings
+alembic
+psycopg2-binary

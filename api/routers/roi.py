@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
-from schemas.roi import ROISimulationRequest, ROISimulationResponse
-from services.roi_service import simulate_roi
+from ..schemas.roi import ROISimulationRequest, ROISimulationResponse
+from ..services.roi_service import simulate_roi
 
 router = APIRouter(prefix="/api/roi", tags=["ROI Simulation"])
+
 
 @router.post("/simulate", response_model=ROISimulationResponse)
 async def simulate(request: ROISimulationRequest):
