@@ -1,22 +1,33 @@
 import json
 import hashlib
+import uuid  # Import the uuid module
+from datetime import datetime  # Import the datetime module
 from typing import Any, Dict
+
+
+def _json_serializer(obj: Any) -> str:
+    """
+    Custom JSON serializer for objects not serializable by default json code.
+    Handles UUID and datetime objects.
+    """
+    if isinstance(obj, (datetime,)):
+        return obj.isoformat()
+    if isinstance(obj, uuid.UUID):
+        return str(obj)
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
 
 
 def _recursive_sort_and_clean(data: Any) -> Any:
     """
     Recursively sorts all keys in dictionaries and removes keys with None values.
-    This is the core of our deterministic canonicalization.
     """
     if isinstance(data, dict):
-        # Sort dictionary keys and filter out None values, then recurse
         return {
             k: _recursive_sort_and_clean(v)
             for k, v in sorted(data.items())
             if v is not None
         }
     if isinstance(data, list):
-        # Recurse on each item in the list
         return [_recursive_sort_and_clean(item) for item in data]
     return data
 
@@ -24,33 +35,22 @@ def _recursive_sort_and_clean(data: Any) -> Any:
 class CryptographyService:
     """
     Handles all cryptographic operations for the Fulcrum protocol.
-    Ensures crypto-agility by centralizing all crypto logic here.
     """
 
     @staticmethod
     def generate_hash(data: Dict[str, Any]) -> str:
         """
         Generates a deterministic hash for a given data dictionary.
-
-        This process is the heart of our verifiability:
-        1. Recursively sorts all keys and removes null values to ensure that
-           logically identical objects always have the same representation.
-        2. Serializes the cleaned object to a compact JSON string.
-        3. Hashes the resulting string using the SHA-256 algorithm.
-
-        Returns:
-            A hex-encoded string of the SHA-256 hash.
         """
-        # 1. Canonicalize the data object
         canonical_data = _recursive_sort_and_clean(data)
 
-        # 2. Serialize to a compact, deterministic JSON string
-        #    separators=(',', ':') removes whitespace.
-        #    ensure_ascii=False is important for consistent handling of unicode.
+        # Use our custom serializer by passing it to the `default` argument
         serialized_data = json.dumps(
-            canonical_data, separators=(",", ":"), ensure_ascii=False
+            canonical_data,
+            separators=(",", ":"),
+            ensure_ascii=False,
+            default=_json_serializer,  # THIS IS THE FIX
         ).encode("utf-8")
 
-        # 3. Hash the resulting byte string
         hasher = hashlib.sha256(serialized_data)
         return hasher.hexdigest()
