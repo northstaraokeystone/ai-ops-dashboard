@@ -1,19 +1,10 @@
-# Web framework
 fastapi
-uvicorn
-
-# Settings management
-pydantic-settings
-python-dotenv
-
-# Database
-SQLAlchemy
-alembic
-psycopg2-binary
-
-# Testing
 httpx
-
-# Data science & analysis
-numpy
+uvicorn[standard]
+pydantic
+pydantic-settings
 pandas
+scikit-learn
+shap
+SQLAlchemy
+psycopg2-binary
