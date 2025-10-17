@@ -29,7 +29,7 @@ def test_create_and_verify_idempotency(client: TestClient, valid_payload: dict):
     Tests the interaction creation endpoint and its idempotency.
     """
     # Part 1: First submission should create a new resource.
-    first_response = client.post("/interactions/", json=valid_payload)
+    first_response = client.post("/api/interaction/", json=valid_payload)
     assert (
         first_response.status_code == 201
     ), f"First submission failed: {first_response.text}"
@@ -39,7 +39,7 @@ def test_create_and_verify_idempotency(client: TestClient, valid_payload: dict):
     assert first_data["canonical_hash"] is not None
 
     # Part 2: Second submission with the same payload should return the existing resource.
-    second_response = client.post("/interactions/", json=valid_payload)
+    second_response = client.post("/api/interaction/", json=valid_payload)
     assert (
         second_response.status_code == 200
     ), "Idempotency check failed: expected 200 on second post"
