@@ -1,8 +1,19 @@
+# Web framework
 fastapi
 uvicorn
+
+# Settings management
 pydantic-settings
+python-dotenv
+
+# Database
+SQLAlchemy
 alembic
 psycopg2-binary
-SQLAlchemy
+
+# Testing
 httpx
+
+# Data science & analysis
 numpy
+pandas
