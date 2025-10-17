@@ -12,7 +12,7 @@ from api.core.config import settings
 from api.schemas.interaction import InteractionCreate, InteractionResponse
 
 # Global engine and session maker
-engine = create_engine(settings.database_url)
+engine = create_engine(settings.DATABASE_URL)
 # 2. USE THE TOOL CORRECTLY WITH THE ENGINE
 Session = sessionmaker(bind=engine)
 
