@@ -30,7 +30,7 @@ jobs:
         # We must provide the environment variables our application needs to run.
         # We use GitHub's encrypted secrets for this.
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+          DATABASE_URL: "sqlite:///./test.db"
           NAOK_FULCRUM_PRIME_KEY: ${{ secrets.NAOK_FULCRUM_PRIME_KEY }}
           NAOK_FULCRUM_SALT: ${{ secrets.NAOK_FULCRUM_SALT }}
         run: python -m pytest

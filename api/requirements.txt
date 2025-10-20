@@ -8,3 +8,4 @@ scikit-learn
 shap
 SQLAlchemy
 psycopg2-binary
+alembic

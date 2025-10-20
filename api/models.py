@@ -5,6 +5,7 @@ from sqlalchemy import (
     DateTime,
     Text,
     UniqueConstraint,
+    PrimaryKeyConstraint,
 )
 from sqlalchemy.dialects.postgresql import UUID, BYTEA, JSONB
 from sqlalchemy.orm import declarative_base
@@ -16,7 +17,7 @@ class InteractionLog(Base):
     __tablename__ = "interaction_log"
 
     # Time-ordered UUID
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), nullable=False, default=uuid.uuid4)
 
     # Actor identifier
     agent_id = Column(UUID(as_uuid=True), nullable=False, index=True)
@@ -50,6 +51,7 @@ class InteractionLog(Base):
     agent_support = Column(JSONB, nullable=True, index=True)
 
     __table_args__ = (
+        PrimaryKeyConstraint("id", "emitted_at_utc", name="pk_interaction_log"),
         UniqueConstraint(
             "payload_hash", "emitted_at_utc", name="uq_payload_hash_emitted_at_utc"
         ),

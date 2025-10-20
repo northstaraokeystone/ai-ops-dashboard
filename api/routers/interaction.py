@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
-from api.db.session import get_db
+from api.dependencies import get_db
 from api.schemas.interaction import InteractionCreate, InteractionRead
 from api.services.interaction import create_interaction
 
