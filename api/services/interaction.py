@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import Tuple
 from api.services.cryptography_service import CryptographyService
-from api.db.models.interaction import Interaction as InteractionModel
+from api.models import InteractionLog as InteractionModel
 from api.schemas.interaction import InteractionCreate
 
 
