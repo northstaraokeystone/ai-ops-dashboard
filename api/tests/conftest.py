@@ -5,7 +5,7 @@ from starlette.testclient import TestClient
 
 from api.core.config import settings
 from api.main import app
-from api.db.base_class import Base  # Import the Base
+from api.models import Base  # Import the Base
 
 # Override the DATABASE_URL for a fast, in-memory SQLite test database
 TEST_SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
