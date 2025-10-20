@@ -17,7 +17,7 @@ def create_interaction(
 
     db_interaction = (
         db.query(InteractionModel)
-        .filter(InteractionModel.canonical_hash == canonical_hash)
+        .filter(InteractionModel.payload_hash == canonical_hash)
         .first()
     )
     if db_interaction:
