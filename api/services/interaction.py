@@ -45,7 +45,7 @@ def create_interaction(
         causality_id=interaction.causality_id,  # Assume optional/direct map; set None if not in DTO
         emitted_at_utc=datetime.utcnow(),  # Required; timezone-aware for UTC consistency
         action_type=interaction.action_type,
-        payload=interaction.payload,
+        payload=payload_bytes,
         payload_hash=payload_hash,
         agent_support=interaction.details,  # Map details to JSONB for structured resilience
         # Discard session_id intentionally—no corresponding column, prevents leakage
