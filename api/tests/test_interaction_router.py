@@ -36,7 +36,7 @@ def test_create_and_verify_idempotency(client: TestClient, valid_payload: dict):
 
     first_data = first_response.json()
     assert "id" in first_data
-    assert first_data["canonical_hash"] is not None
+    assert first_data["payload_hash"] is not None
 
     # Part 2: Second submission with the same payload should return the existing resource.
     second_response = client.post("/api/interaction/", json=valid_payload)
