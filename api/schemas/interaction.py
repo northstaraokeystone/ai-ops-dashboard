@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
@@ -18,6 +19,7 @@ class InteractionCreate(BaseModel):
     environment_hash: str
     session_id: str  # Discarded in service; API-only for context
     details: dict  # Mapped to agent_support JSONB in DB
+    causality_id: Optional[UUID] = None  # Optional for non-causal interactions
 
 
 class InteractionRead(BaseModel):

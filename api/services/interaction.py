@@ -42,7 +42,9 @@ def create_interaction(
     db_interaction = InteractionLog(
         agent_id=interaction.agent_id,
         environment_hash=interaction.environment_hash,
-        causality_id=interaction.causality_id,  # Assume optional/direct map; set None if not in DTO
+        causality_id=getattr(
+            interaction, "causality_id", None
+        ),  # Harden for optional; default None if absent
         emitted_at_utc=datetime.utcnow(),  # Required; timezone-aware for UTC consistency
         action_type=interaction.action_type,
         payload=payload_bytes,
