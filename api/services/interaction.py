@@ -1,7 +1,9 @@
 import hashlib
 from datetime import datetime
 from typing import Tuple
+
 from sqlalchemy.orm import Session
+
 from api.models import InteractionLog
 from api.schemas.interaction import InteractionCreate
 
@@ -9,26 +11,10 @@ from api.schemas.interaction import InteractionCreate
 def create_interaction(
     db: Session, interaction: InteractionCreate
 ) -> Tuple[InteractionLog, bool]:
-    """Create a new interaction log entry, acting as an anti-corruption layer between API DTO and DB model.
-
-    Why: Translates Pydantic DTO to SQLAlchemy model explicitly to prevent TypeErrors from mismatched fields,
-    ensuring robustness against schema evolutions (e.g., added DTO fields ignored). Computes payload_hash for
-    idempotency, maps details to agent_support JSONB for flexible resilience data, discards session_id as irrelevant
-    to persistence, and sets emitted_at_utc for required timestamping. Aligns with Martin Clean Code for explicit
-    intent, Fowler refactoring for evolvable layers, and Pragmatic Programmer defensive programming to eliminate
-    similar bugs proactively. Supports AI trust fabric by maintaining data integrity for agentic logs.
-    """
-    # Compute canonical payload_hash for idempotency (SHA-256 for consistency/security)
-    # Why: Ensures uniqueness without exposing raw payload, preventing duplicates in high-volume agent ops.
-    payload_bytes = (
-        interaction.payload.encode("utf-8")
-        if isinstance(interaction.payload, str)
-        else interaction.payload
-    )
+    payload_bytes = interaction.payload.encode("utf-8")
     payload_hash = hashlib.sha256(payload_bytes).hexdigest()
 
-    # Idempotency check using correct column (payload_hash)
-    # Why: Prevents redundant inserts, aligning with scalability for solo-preneur efficiency.
+    # Idempotency check
     existing = (
         db.query(InteractionLog)
         .filter(InteractionLog.payload_hash == payload_hash)
@@ -37,22 +23,17 @@ def create_interaction(
     if existing:
         return existing, False
 
-    # Explicit mapping and instantiation to harden against TypeErrors
-    # Why: Avoids dict unpacking risks; each kwarg is intentional, immune to extra DTO fields (defensive).
+    # Create new interaction
     db_interaction = InteractionLog(
-        agent_id=interaction.agent_id,
-        environment_hash=interaction.environment_hash,
-        causality_id=getattr(
-            interaction, "causality_id", None
-        ),  # Harden for optional; default None if absent
-        emitted_at_utc=datetime.utcnow(),  # Required; timezone-aware for UTC consistency
-        action_type=interaction.action_type,
-        payload=payload_bytes,
         payload_hash=payload_hash,
-        agent_support=interaction.details,  # Map details to JSONB for structured resilience
-        # Discard session_id intentionally—no corresponding column, prevents leakage
+        emitted_at_utc=datetime.utcnow(),
+        agent_id=interaction.agent_id,
+        action_type=interaction.action_type,
+        agent_support=interaction.details,  # Map incoming details to agent_support
+        causality_id=interaction.causality_id,  # Handle optional (defaults to None)
+        environment_hash=interaction.environment_hash,
+        payload=payload_bytes,  # Pass the encoded bytes to constructor
     )
-
     db.add(db_interaction)
     db.commit()
     db.refresh(db_interaction)

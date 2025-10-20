@@ -9,3 +9,4 @@ shap
 SQLAlchemy
 psycopg2-binary
 alembic
+pytest

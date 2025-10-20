@@ -38,6 +38,9 @@ def test_create_and_verify_idempotency(client: TestClient, valid_payload: dict):
     assert "id" in first_data
     assert first_data["payload_hash"] is not None
 
+    assert "agent_support" in first_data
+    assert first_data["agent_support"]["message"] == "Final test successful."
+
     # Part 2: Second submission with the same payload should return the existing resource.
     second_response = client.post("/api/interaction/", json=valid_payload)
     assert (

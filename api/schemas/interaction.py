@@ -1,42 +1,35 @@
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional, Dict
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
 
+# This schema defines the data we ACCEPT from the API client.
 class InteractionCreate(BaseModel):
-    """Schema for creating a new interaction log entry via API input.
-
-    Why: Validates incoming DTO fields for service layer mapping, ensuring type safety
-    and preventing invalid data (e.g., non-UUID agent_id). Preserved unchanged per requirements,
-    aligning with SRP for input validation and Fowler DTO patterns for API-DB separation.
-    """
-
-    agent_id: UUID
     action_type: int
-    payload: str | bytes  # Flexible for raw/compressed data
+    agent_id: UUID
     environment_hash: str
-    session_id: str  # Discarded in service; API-only for context
-    details: dict  # Mapped to agent_support JSONB in DB
-    causality_id: Optional[UUID] = None  # Optional for non-causal interactions
+    payload: Any
+    details: Optional[Dict[str, Any]] = None
+    causality_id: Optional[UUID] = None
+    session_id: Optional[str] = None  # Optional, as it's discarded by the service
 
 
+# This schema defines the data we RETURN to the API client.
+# It should perfectly mirror the fields available on the InteractionLog DB model.
 class InteractionRead(BaseModel):
-    """Schema for reading/serializing interaction log entries from DB.
+    model_config = ConfigDict(from_attributes=True)
 
-    Why: Aligns exactly with InteractionLog model attributes to prevent validation errors,
-    using Pydantic V2 ConfigDict for modern ORM mode (from_attributes=True) enabling
-    direct instantiation from SQLAlchemy objects. Renamed fields (payload_hash, emitted_at_utc)
-    fix mismatches; added agent_id/action_type for completeness, supporting comprehensive
-    API responses without partial data bias in AI/ML analytics (e.g., full context for
-    interpretability via SHAP on action_type). Enhances trust fabric by ensuring schema-DB fidelity.
-    """
-
+    # Fields that directly map to the InteractionLog model
     id: UUID
     payload_hash: str
     emitted_at_utc: datetime
     agent_id: UUID
     action_type: int
+    causality_id: Optional[UUID]
+    environment_hash: str
+    agent_support: Optional[Dict[str, Any]]
 
-    model_config = ConfigDict(from_attributes=True)
+    # NOTE: 'session_id' and 'details' are not here because they don't exist
+    # on the final DB object under those names. 'details' is returned as 'agent_support'.
