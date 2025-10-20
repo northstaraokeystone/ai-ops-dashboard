@@ -6,8 +6,10 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
     PrimaryKeyConstraint,
+    LargeBinary,
+    JSON,
 )
-from sqlalchemy.dialects.postgresql import UUID, BYTEA, JSONB
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -35,7 +37,7 @@ class InteractionLog(Base):
     action_type = Column(Integer, nullable=False)
 
     # Raw, compressed binary data of the action/observation payload
-    payload = Column(BYTEA, nullable=False)
+    payload = Column(LargeBinary, nullable=False)
 
     # Canonical hash of the uncompressed payload (Idempotency Key)
     payload_hash = Column(Text, nullable=False)
@@ -48,7 +50,7 @@ class InteractionLog(Base):
     # data without migrations, efficient querying via PostgreSQL GIN indexes, and atomic
     # storage tied to each interaction for traceability (aligns with OpenAI ethics on
     # transparency and MIT self-evolving agents principles).
-    agent_support = Column(JSONB, nullable=True, index=True)
+    agent_support = Column(JSON, nullable=True, index=True)
 
     __table_args__ = (
         PrimaryKeyConstraint("id", "emitted_at_utc", name="pk_interaction_log"),
