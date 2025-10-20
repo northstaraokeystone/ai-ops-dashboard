@@ -33,6 +33,7 @@ class InteractionRead(BaseModel):
     interpretability via SHAP on action_type). Enhances trust fabric by ensuring schema-DB fidelity.
     """
 
+    id: UUID
     payload_hash: str
     emitted_at_utc: datetime
     agent_id: UUID
