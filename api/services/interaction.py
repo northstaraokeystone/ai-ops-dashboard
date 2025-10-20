@@ -13,6 +13,7 @@ def create_interaction(
     Returns a tuple of (interaction_model, created_boolean).
     """
     interaction_data = interaction.model_dump()
+    interaction_data.pop("session_id", None)
     canonical_hash = CryptographyService.generate_hash(interaction_data)
 
     db_interaction = (
