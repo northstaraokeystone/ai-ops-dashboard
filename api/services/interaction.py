@@ -1,11 +1,14 @@
 import hashlib
 from datetime import datetime
+from typing import Tuple
 from sqlalchemy.orm import Session
 from api.models import InteractionLog
 from api.schemas.interaction import InteractionCreate
 
 
-def create_interaction(db: Session, interaction: InteractionCreate) -> InteractionLog:
+def create_interaction(
+    db: Session, interaction: InteractionCreate
+) -> Tuple[InteractionLog, bool]:
     """Create a new interaction log entry, acting as an anti-corruption layer between API DTO and DB model.
 
     Why: Translates Pydantic DTO to SQLAlchemy model explicitly to prevent TypeErrors from mismatched fields,
@@ -32,7 +35,7 @@ def create_interaction(db: Session, interaction: InteractionCreate) -> Interacti
         .first()
     )
     if existing:
-        return existing
+        return existing, False
 
     # Explicit mapping and instantiation to harden against TypeErrors
     # Why: Avoids dict unpacking risks; each kwarg is intentional, immune to extra DTO fields (defensive).
@@ -42,7 +45,7 @@ def create_interaction(db: Session, interaction: InteractionCreate) -> Interacti
         causality_id=interaction.causality_id,  # Assume optional/direct map; set None if not in DTO
         emitted_at_utc=datetime.utcnow(),  # Required; timezone-aware for UTC consistency
         action_type=interaction.action_type,
-        payload=payload_bytes,
+        payload=interaction.payload,
         payload_hash=payload_hash,
         agent_support=interaction.details,  # Map details to JSONB for structured resilience
         # Discard session_id intentionally—no corresponding column, prevents leakage
@@ -51,4 +54,4 @@ def create_interaction(db: Session, interaction: InteractionCreate) -> Interacti
     db.add(db_interaction)
     db.commit()
     db.refresh(db_interaction)
-    return db_interaction
+    return db_interaction, True
