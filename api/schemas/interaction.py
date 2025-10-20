@@ -11,6 +11,7 @@ class InteractionCreate(BaseModel):
     causality_id: uuid.UUID
     environment_hash: str
     session_id: str
+    payload: Any
     details: Dict[str, Any]
 
 
