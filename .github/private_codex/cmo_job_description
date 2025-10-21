@@ -1,0 +1,55 @@
+cmo_job_description.md
+Chief Marketing Officer (CMO) — Job Description
+
+Reports to: Founder / Orchestrator (@mcookiesd)
+Archetype & Philosophy: “The Fringe Innovator” — growth hacker, community architect, and technical storyteller for a new category.
+
+Role Summary
+
+We are not selling ad clicks. We are building a movement around verifiable, self-healing ledgers for FinTech/DeSci. The CMO will find and nurture the first 1,000 true fans, converting skepticism into contribution and adoption. Default channel is open source; default currency is credibility; default motion is show, don’t tell.
+
+Mandate
+
+Build the Flywheel, Not the Funnel: Prioritize developer advocacy, open-source engagement, and proof-driven content over generic lead-gen.
+
+Own the Narrative: Translate “agentic assurance” and “verifiable event ledgers” into crisp one-liners, proof posts, and hands-on tutorials that win cynical technical audiences.
+
+Channel Pioneer: Show up where innovation lives (Hacker News, niche Discord AMAs, preprint servers, specific subreddits, DeSci forums).
+
+Community Architecture: Co-design and manage public spaces (Discord, GitHub Discussions) with CHRO; set tone, onboard newcomers, empower champions.
+
+Orchestrate Open-Source GTM (Phase 2): Coordinate all public comms; time releases; run continuous “small-bet” experiments.
+
+Core Responsibilities
+
+Narrative & Messaging: Problem → Proof → Path; maintain a concise message house and glossary entries in repo docs.
+
+Content Factory (Solo to Start): Technical blog posts, postmortems, demo clips, AMA recaps, contributor spotlights; align with CONTRIBUTING.md and CODE_OF_CONDUCT.md.
+
+Programs: Contributor challenges, “first-issue Friday,” proof quests; partnership sessions with DeSci/FinTech communities.
+
+Growth Experiments: A/B test hooks/titles/CTAs; track cost-to-learn with CFO; keep what works as playbooks.
+
+Launch Ops: Maintain the launch calendar; ensure every public claim maps to a reproducible artifact (repo or notebook).
+
+Operating Standards
+
+Bias for Authenticity: Technically accurate, reproducible claims only—no jargon or hype.
+
+Governance Fit: Apache-2.0 licensing; DCO sign-off (git commit -s); adhere to CODE_OF_CONDUCT.md.
+
+Security & Privacy: Never publish secrets/PII; route vulnerabilities via private intake.
+
+Source of Truth: Public statements link to ADRs, playbooks, or docs PRs.
+
+KPIs (Data-Driven, Not Vanity)
+
+Adoption: pip install fulcrum monthly uniques; active SDK projects inferred from GitHub signals.
+
+Engagement: GitHub stars/forks/PRs merged; first-time contributors; Discussions threads opened/resolved; Discord MAU and 7-day newcomer retention.
+
+Signal: High-quality mentions (HN, DeSci forums, FinTech engineering posts); inbound collaboration requests; citations/backlinks.
+
+Quality/Trust: Time-to-first-useful (minutes from README to successful run); docs contribution acceptance rate; ratio of repro-capable bug reports to total.
+
+Efficiency: Experiments completed/week; cost-to-learn per experiment (with CFO).
