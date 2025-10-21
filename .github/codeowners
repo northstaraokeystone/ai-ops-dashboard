@@ -1,0 +1,22 @@
+Default ownership for all files not otherwise specified: @CEO
+
+Backend files owned by Chief of Code
+api/ @CofC_Agent
+
+Frontend files owned by UI/UX lead
+frontend/ @Chief_of_UI_Agent
+
+Documentation and legal files owned by CHRO
+docs/ @CHRO_Legal_Agent
+
+LICENSE @CHRO_Legal_Agent
+
+NOTICE @CHRO_Legal_Agent
+
+
+CONTRIBUTING.md @CHRO_Legal_Agent
+
+CODE_OF_CONDUCT.md @CHRO_Legal_Agent
+
+Meta-ownership for CODEOWNERS itself
+.github/CODEOWNERS @CEO

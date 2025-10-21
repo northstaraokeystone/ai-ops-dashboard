@@ -1,54 +1,78 @@
-# AI Trust Fabric
-### The Governance Engine for Production AI
+# Fulcrum
 
-**We transform chaos into sacred order. Uncertainty to trust. Potential to power.**
+<p align="center">The agent-literate command center that unifies triage, diagnosis, and one-click remediation with a built-in audit trail.</p>
 
-This repository contains the V1.0 implementation of the AI Trust Fabric, an open-source framework for the economic and ethical governance of machine learning systems. This is not just a monitoring tool; it is a **Decision Integrity Platform.**
-
----
-
-### The Problem: Broken Decisions
-The world is built on decisions. As AI automates more of them, the cost of a broken decision multiplies. 78% of production ML models degrade silently, leading to millions in unquantified losses, compliance risks, and eroded trust. Existing tools monitor technical metrics; they do not govern economic or ethical outcomes.
-
-**We are rewriting the playbook.**
-
----
-
-### The Three Pillars of Trust (The V1.0 Modules)
-
-This system is built on a three-layer trust stack, demonstrated through three core modules:
-
-**1. Integrity (Trust the Input)**
--   **Mantra:** "Garbage in → litigation out."
--   **Function:** Quantifies data health before it ever reaches a model, providing a 0-100 Data Trust Index and actionable remediation steps.
-
-**2. Explainability (Trust the Logic)**
--   **Mantra:** "You can't optimize what you can't explain."
--   **Function:** Analyzes model training logs to translate hyperparameter choices into GPU costs and operational efficiency.
-
-**3. Sustainability (Trust the Lifecycle)**
--   **Mantra:** "Retrain for reason, not for vibes."
--   **Function:** Simulates model decay over time, translating performance drift into a dollar figure to provide a clear, economic trigger for when to retrain.
+<p align="center">
+  <a href="https://github.com/YOUR_ORG/YOUR_REPO/actions/workflows/ci.yml">
+    <img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/YOUR_ORG/YOUR_REPO/ci.yml?branch=main&style=for-the-badge&logo=github">
+  </a>
+  <a href="https://github.com/northstaraokeystone/ai-ops-dashboard">
+    <img alt="License" src="https://img.shields.io/github/license/YOUR_ORG/YOUR_REPO?style=for-the-badge&logo=apache">
+  </a>
+  <a href="https://pypi.org/project/fulcrum/">
+    <img alt="PyPI Version" src="https://img.shields.io/pypi/v/fulcrum?style=for-the-badge&logo=pypi">
+  </a>
+</p>
 
 ---
 
-### Status & Live Demo
--   **Backend API:** Deployed via Render (LIVE)
--   **Frontend Dashboard:** Deployed via Cloudflare Pages (ai-trust-fabric.northstaraokeystone.com)
+## The Problem
 
----
-The Vision: AGI-Adjacent Governance
-This project is the first step towards a larger vision: building the constitutional framework for autonomous AI. As AI moves from tools to agents, our role shifts from monitoring to governance—setting the economic, ethical, and operational boundaries within which AI is permitted to optimize.
+Fragmented incident response across many tools slows Mean Time to Recovery (MTTR) and leaves AI agent actions unaudited and hard to explain, blocking compliance and trust in autonomous systems. When an agent fails, teams are left scrambling between observability platforms, ticketing systems, and runbook automators, wasting critical time while risks compound.
 
-Values
-Keep it Clear: Simple. Strategic. Focused.
-Keep it True: Integrity. Accuracy. Fidelity.
-Keep it Real: Authentic. Genuine. Raw.
-Keep it Bold: Disruptive. Courageous. Contagious.
-Keep it Human: Humble. Creative. Compassionate.
-Keep it Sacred: Authoritative. Transcendent. Infinite.
+## The Solution
 
-This project is an artifact of my work at the W. P. Carey School of Business, Arizona State University, MS AIB.
+Fulcrum provides a unified **"Trust Command Center"** that brings together incident triage, automated diagnosis, and one-click remediation in a single, agent-aware surface. Built as an open-source platform, it provides a verifiable, immutable ledger for every agentic action and a simple Python SDK to make your agents resilient and observable in minutes.
 
-MVP is live.
+This reduces resolution time, enhances auditability, and builds deep, provable trust in your agentic workforce.
 
+## Core Features
+
+*   **Verifiable Ledger:** Log every agentic action to an immutable, time-series ledger, ready for audit and analysis.
+*   **Interactive Triage:** A single command center to investigate, assign ownership, and manage the lifecycle of incidents.
+*   **Automated Remediation:** Execute pre-defined, version-controlled playbooks with one click directly from the UI.
+*   **Python SDK:** A simple, clean SDK to integrate Fulcrum's resilience and observability capabilities into any AI agent in under 5 minutes.
+
+## Getting Started
+
+To get the Fulcrum stack running locally for development:
+
+**1. Clone the Repository:**
+
+git clone https://github.com/northstaraokeystone/ai-ops-dashboard
+cd YOUR_REPO
+
+2. Launch Services with Docker:
+This command starts the PostgreSQL database and all other required backend services.
+
+docker-compose up -d
+
+3. Set up and Run the Backend API:
+This will install dependencies and start the FastAPI server on localhost:8000.
+
+
+
+# Activate virtual environment
+python -m venv .venv
+source .venv/bin/activate  # or .\.venv\Scripts\activate on Windows
+
+# Install dependencies
+pip install -r api/requirements.txt
+
+# Run database migrations
+alembic upgrade head
+
+# Start the server
+uvicorn api.main:app --reload
+4. Run the Frontend:
+Open a new terminal to run the React development server on localhost:5173.
+
+Bash
+
+cd frontend
+npm install
+npm run dev
+You can now access the Trust Command Center at http://localhost:5173.
+
+Contributing
+We welcome contributions! Please see our CONTRIBUTING.md file for details on how to get started, our code standards, and the PR process.
