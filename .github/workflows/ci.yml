@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  test-and-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,19 +18,40 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-          cache-dependency-path: 'api/requirements.txt'
+          cache-dependency-path: |
+            api/requirements.txt
+            dev-requirements.txt
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest
+          # Install production dependencies
           pip install -r api/requirements.txt
+          # Install development/testing dependencies (pytest, etc.)
+          pip install -r dev-requirements.txt
+          # ---- THIS IS THE CRITICAL FIX ----
+          # Install our API as an editable package so Python can find 'truthrun'
+          pip install -e api
+
+      - name: Lint with Ruff
+        run: |
+          # Check for code style and quality issues first
+          ruff check api
+
+      - name: Format with Ruff
+        run: |
+          # Check for formatting issues
+          ruff format api --check
 
       - name: Run tests with pytest
-        # We must provide the environment variables our application needs to run.
-        # We use GitHub's encrypted secrets for this.
         env:
-          DATABASE_URL: "sqlite:///./test.db"
+          # Use an in-memory SQLite database for fast, isolated tests
+          DATABASE_URL: "sqlite:///:memory:"
+          # Load secrets for services that require them during testing
           NAOK_FULCRUM_PRIME_KEY: ${{ secrets.NAOK_FULCRUM_PRIME_KEY }}
           NAOK_FULCRUM_SALT: ${{ secrets.NAOK_FULCRUM_SALT }}
-        run: python -m pytest
+          # Set the MERKLE_ANCHOR_ENABLED flag for tests that need it
+          MERKLE_ANCHOR_ENABLED: "True"
+        run: |
+          # Run pytest with coverage reporting
+          python -m pytest --cov=api --cov-report=xml
