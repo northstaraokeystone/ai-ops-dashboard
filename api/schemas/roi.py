@@ -1,13 +1,16 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+
 
 class ROIPeriodMetrics(BaseModel):
     period: int
     cum_roi: float
     net_roi: float
 
+
 class ROISimulationRequest(BaseModel):
     periods: int = 12
     retraining_cost_usd: int = 6000
+
 
 class ROISimulationResponse(BaseModel):
     timeline: list[ROIPeriodMetrics]

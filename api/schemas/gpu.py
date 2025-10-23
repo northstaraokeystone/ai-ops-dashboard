@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+
 
 class GPUExperiment(BaseModel):
     model_type: str
@@ -6,8 +7,10 @@ class GPUExperiment(BaseModel):
     epochs: int
     gpu_time_ms: float
 
+
 class GPUAnalysisRequest(BaseModel):
     experiments: list[GPUExperiment]
+
 
 class GPUAnalysisResponse(BaseModel):
     potential_savings_pct: float | None
