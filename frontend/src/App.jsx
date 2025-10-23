@@ -29,4 +29,8 @@ function App() {
   );
 }
 
+// ... existing code ...
+
 export default App;
+
+// Forcing a new Cloudflare build - 2025-10-23
