@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Field
 
+
 class IntegrityRequest(BaseModel):
     records: list[dict] = Field(..., min_length=1)
     target_col: str | None = None
+
 
 class IntegrityResponse(BaseModel):
     integrity_score: float
