@@ -44,3 +44,26 @@ const mockSSE = () => {
 };
 
 if (process.env.NODE_ENV !== 'test') mockSSE(); // Disable in tests
+
+// ... existing store ...
+interface Playbook {
+  playbookId: string;
+  name: string;
+  successRate: string;
+  confidence: number;
+}
+
+interface Incident {
+  // ... existing ...
+  suggestedActions: Playbook[]; // New for workbench
+}
+
+// Update mocks
+incidents: [
+  { id: '1', /* ... */, suggestedActions: [
+    { playbookId: 'p-001', name: 'Restart Container', successRate: '91% Success', confidence: 0.92 },
+    { playbookId: 'p-002', name: 'Rollback Commit', successRate: '85% Success', confidence: 0.88 },
+  ] },
+  // Similar for others; prod: Populate from /api/agent/suggest_action response
+],
+// ... rest unchanged

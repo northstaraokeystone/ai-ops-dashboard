@@ -21,3 +21,15 @@
 **Deps:** react, react-table (TanStack), lucide-react (icons), zustand, tailwind (styles).
 
 **Why:** Centerpiece for Triage Level 2; enables interactive "drill-down to truth" with verifiable payloads; efficient (<500ms render/1000 rows, virtualized); ties to SUN-1/3 via triage/assignment tools.
+
+# IncidentWorkbench.tsx Component Transfer
+
+**API:** Props: { incidentId: string, trigger: ReactNode } — fetches/render modal on trigger.
+
+**States:** Local useState for open; relies on incidentStore for data.
+
+**a11y:** ARIA-describedby for content; dialog role; axe-tested.
+
+**Deps:** react, shadcn/ui (dialog), ./ActionButton, zustand, tailwind (styles).
+
+**Why:** Final "action" layer for Level 3; closes 10-min truth run loop with verifiable recovery; efficient (<200ms open, parallel actions); ties to SUN-1/3 via drill-down engine.
