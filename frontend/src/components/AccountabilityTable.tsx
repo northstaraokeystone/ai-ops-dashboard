@@ -1,70 +1,111 @@
 import React from 'react';
-import { useTable, useSortBy, useExpanded } from 'react-table'; // TanStack for efficient table per design_system_v1.md
-import { ChevronDown, ChevronRight } from 'lucide-react'; // Icons for expand
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useStore } from 'zustand';
-import { incidentStore } from '../stores/incidentStore';
+import { incidentStore, Incident } from '../stores/incidentStore'; // Assuming Incident type is exported
+
+const columnHelper = createColumnHelper<Incident>();
+
+const columns = [
+  columnHelper.accessor('expanded', {
+    header: '',
+    cell: ({ row }) => (
+      <button onClick={() => row.toggleExpanded()} aria-label="Toggle expand">
+        {row.getIsExpanded() ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+      </button>
+    ),
+    enableSorting: false,
+  }),
+  columnHelper.accessor('status', {
+    header: 'Status',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor('agentName', {
+    header: 'Agent Name',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor('action', {
+    header: 'Action',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor('owner', {
+    header: 'Owner',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor('time', {
+    header: 'Time',
+    cell: info => info.getValue(),
+  }),
+];
 
 const AccountabilityTable: React.FC = () => {
-  const { incidents, toggleExpand, sortBy } = useStore(incidentStore);
+  const { incidents, toggleExpand } = useStore(incidentStore);
 
-  const columns = React.useMemo(() => [
-    {
-      Header: '',
-      accessor: 'expanded',
-      Cell: ({ row }) => (
-        <button onClick={() => toggleExpand(row.original.id)} aria-label="Toggle expand">
-          {row.isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        </button>
-      ),
-      disableSortBy: true,
-    },
-    { Header: 'Status', accessor: 'status' },
-    { Header: 'Agent Name', accessor: 'agentName' },
-    { Header: 'Action', accessor: 'action' },
-    { Header: 'Owner', accessor: 'owner' },
-    { Header: 'Time', accessor: 'time' },
-  ], []);
-
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
-    { columns, data: incidents },
-    useSortBy,
-    useExpanded
-  );
+  const table = useReactTable({
+    data: incidents,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getExpandedRowModel: getCoreRowModel(), // Or a more specific one if needed
+    getRowCanExpand: () => true,
+  });
 
   return (
-    <table {...getTableProps()} className="w-full border-collapse" aria-label="Accountability Table">
+    <table className="w-full border-collapse" aria-label="Accountability Table">
       <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps(column.getSortByToggleProps())} className="p-2 text-left font-semibold">
-                {column.render('Header')}
-                {column.isSorted ? (column.isSortedDesc ? ' ↓' : ' ↑') : ''}
+        {table.getHeaderGroups().map(headerGroup => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map(header => (
+              <th key={header.id} colSpan={header.colSpan} className="p-2 text-left font-semibold">
+                {header.isPlaceholder ? null : (
+                  <div
+                    {...{
+                      className: header.column.getCanSort()
+                        ? 'cursor-pointer select-none'
+                        : '',
+                      onClick: header.column.getToggleSortingHandler(),
+                    }}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {{
+                      asc: ' ↑',
+                      desc: ' ↓',
+                    }[header.column.getIsSorted() as string] ?? null}
+                  </div>
+                )}
               </th>
             ))}
           </tr>
         ))}
       </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <React.Fragment key={row.id}>
-              <tr {...row.getRowProps()} className="border-t">
-                {row.cells.map((cell) => (
-                  <td {...cell.getCellProps()} className="p-2">{cell.render('Cell')}</td>
-                ))}
+      <tbody>
+        {table.getRowModel().rows.map(row => (
+          <React.Fragment key={row.id}>
+            <tr className="border-t">
+              {row.getVisibleCells().map(cell => (
+                <td key={cell.id} className="p-2">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+            {row.getIsExpanded() && (
+              <tr>
+                <td colSpan={row.getVisibleCells().length} className="p-2 bg-gray-800">
+                  <pre aria-label="Raw payload" className="overflow-auto text-white">{JSON.stringify(row.original.agentSupport, null, 2)}</pre>
+                </td>
               </tr>
-              {row.isExpanded && (
-                <tr>
-                  <td colSpan={columns.length} className="p-2 bg-gray-100">
-                    <pre aria-label="Raw payload" className="overflow-auto">{JSON.stringify(row.original.agentSupport, null, 2)}</pre>
-                  </td>
-                </tr>
-              )}
-            </React.Fragment>
-          );
-        })}
+            )}
+          </React.Fragment>
+        ))}
       </tbody>
     </table>
   );
