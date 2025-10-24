@@ -1,4 +1,12 @@
-import { create } from 'zustand'; // Lightweight state mgmt per CTO rec
+import { create } from 'zustand';
+
+// Define all interfaces at the top for clarity
+interface Playbook {
+  playbookId: string;
+  name: string;
+  successRate: string;
+  confidence: number;
+}
 
 interface Incident {
   id: string;
@@ -8,71 +16,89 @@ interface Incident {
   owner: string;
   time: string;
   agentSupport: Record<string, unknown>; // JSONB payload
-  expanded?: boolean; // For row toggle
+  suggestedActions: Playbook[]; // This is now part of the core Incident interface
+  expanded?: boolean; // Optional property for UI state
 }
 
 interface IncidentState {
   incidents: Incident[];
   toggleExpand: (id: string) => void;
-  sortBy: (key: keyof Incident, direction: 'asc' | 'desc') => void;
+  // Note: The sortBy function was causing issues with the complex object.
+  // We will let the TanStack Table library handle sorting in the component itself.
+  // This simplifies the store significantly.
 }
 
 export const incidentStore = create<IncidentState>((set) => ({
-  incidents: [ // Mock data reflecting statuses; prod: Fetch from /api/events
-    { id: '1', status: 'Attention Needed', agentName: 'Trader-7', action: 'Trade Execution', owner: '@user1', time: '2025-10-23T12:00:00Z', agentSupport: { timestamp: '2025-10-23T12:00:00Z', error_log: 'Timeout on exchange API' } },
-    { id: '2', status: 'In Progress', agentName: 'Analyzer-3', action: 'Data Aggregation', owner: '@user2', time: '2025-10-23T11:45:00Z', agentSupport: { timestamp: '2025-10-23T11:45:00Z', error_log: 'Partial data loss' } },
-    { id: '3', status: 'Resolved', agentName: 'Recoverer-5', action: 'Rollback', owner: '@user3', time: '2025-10-23T11:30:00Z', agentSupport: { timestamp: '2025-10-23T11:30:00Z', error_log: 'Successful recovery' } },
+  // --- MOCK DATA ---
+  // This is the single source of mock data for the store.
+  incidents: [
+    {
+      id: '1',
+      status: 'Attention Needed',
+      agentName: 'Trader-7',
+      action: 'Trade Execution',
+      owner: '@user1',
+      time: '2025-10-23T12:00:00Z',
+      agentSupport: { timestamp: '2025-10-23T12:00:00Z', error_log: 'Timeout on exchange API' },
+      suggestedActions: [
+        { playbookId: 'p-001', name: 'Restart Container', successRate: '91% Success', confidence: 0.92 },
+        { playbookId: 'p-002', name: 'Rollback Commit', successRate: '85% Success', confidence: 0.88 },
+      ]
+    },
+    {
+      id: '2',
+      status: 'In Progress',
+      agentName: 'Analyzer-3',
+      action: 'Data Aggregation',
+      owner: '@user2',
+      time: '2025-10-23T11:45:00Z',
+      agentSupport: { timestamp: '2025-10-23T11:45:00Z', error_log: 'Partial data loss' },
+      suggestedActions: [
+        { playbookId: 'p-003', name: 'Re-ingest Source', successRate: '75% Success', confidence: 0.80 },
+      ]
+    },
+    {
+      id: '3',
+      status: 'Resolved',
+      agentName: 'Recoverer-5',
+      action: 'Rollback',
+      owner: '@user3',
+      time: '2025-10-23T11:30:00Z',
+      agentSupport: { timestamp: '2025-10-23T11:30:00Z', error_log: 'Successful recovery' },
+      suggestedActions: [] // Resolved incidents have no suggested actions
+    },
   ],
+
+  // --- ACTIONS ---
   toggleExpand: (id) => set((state) => ({
-    incidents: state.incidents.map((inc) => inc.id === id ? { ...inc, expanded: !inc.expanded } : inc),
-  })),
-  sortBy: (key, direction) => set((state) => ({
-    incidents: [...state.incidents].sort((a, b) => {
-      const valA = a[key], valB = b[key];
-      return (valA < valB ? -1 : valA > valB ? 1 : 0) * (direction === 'asc' ? 1 : -1);
-    }),
+    incidents: state.incidents.map((inc) =>
+      inc.id === id ? { ...inc, expanded: !inc.expanded } : { ...inc, expanded: false }
+    ),
   })),
 }));
 
-// Mock SSE integration (prod: replace with actual /api/events listener)
-// Why: Enables reactive triage; smallest safe with mock for isolated testing.
+
+// Mock real-time updates (for demo purposes)
 const mockSSE = () => {
-  // Sim add/update incidents; prod: Parse SSE for real-time
   setInterval(() => {
-    incidentStore.getState().incidents.push({ id: Date.now().toString(), status: 'Attention Needed', agentName: 'NewAgent', action: 'New Action', owner: '@new', time: new Date().toISOString(), agentSupport: {} });
-  }, 10000); // Sim 10s updates
+    // This is a simplified way to update state in Zustand without using the `set` from inside
+    const currentState = incidentStore.getState();
+    const newIncident: Incident = {
+      id: Date.now().toString(),
+      status: 'Attention Needed',
+      agentName: `NewAgent-${Math.floor(Math.random()*100)}`,
+      action: 'New Action',
+      owner: 'unassigned',
+      time: new Date().toISOString(),
+      agentSupport: { error: 'A new simulated error' },
+      suggestedActions: [
+        { playbookId: 'p-999', name: 'Investigate', successRate: 'N/A', confidence: 0.99 },
+      ]
+    };
+    incidentStore.setState({ incidents: [newIncident, ...currentState.incidents] });
+  }, 15000); // Add a new incident every 15 seconds
 };
 
-if (process.env.NODE_ENV !== 'test') mockSSE(); // Disable in tests
-
-// ... existing store ...
-interface Playbook {
-  playbookId: string;
-  name: string;
-  successRate: string;
-  confidence: number;
+if (process.env.NODE_ENV !== 'test') {
+  //mockSSE(); // Disabling mock SSE for now to ensure a stable build
 }
-
-interface Incident {
-  // ... existing ...
-  suggestedActions: Playbook[]; // New for workbench
-}
-
-// Update mocks
-incidents: [
-  {
-    id: '1',
-    status: 'Attention Needed',
-    agentName: 'Trader-7',
-    action: 'Trade Execution',
-    owner: '@user1',
-    time: '2025-10-23T12:00:00Z',
-    agentSupport: { timestamp: '2025-10-23T12:00:00Z', error_log: 'Timeout on exchange API' },
-    // THIS IS THE FIX
-    suggestedActions: [
-      { playbookId: 'p-001', name: 'Restart Container', successRate: '91% Success', confidence: 0.92 },
-      { playbookId: 'p-002', name: 'Rollback Commit', successRate: '85% Success', confidence: 0.88 },
-    ]
-  },
-  // ... other incidents with the same fix
-],
