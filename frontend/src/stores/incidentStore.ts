@@ -60,10 +60,19 @@ interface Incident {
 
 // Update mocks
 incidents: [
-  { id: '1', /* ... */, suggestedActions: [
-    { playbookId: 'p-001', name: 'Restart Container', successRate: '91% Success', confidence: 0.92 },
-    { playbookId: 'p-002', name: 'Rollback Commit', successRate: '85% Success', confidence: 0.88 },
-  ] },
-  // Similar for others; prod: Populate from /api/agent/suggest_action response
+  {
+    id: '1',
+    status: 'Attention Needed',
+    agentName: 'Trader-7',
+    action: 'Trade Execution',
+    owner: '@user1',
+    time: '2025-10-23T12:00:00Z',
+    agentSupport: { timestamp: '2025-10-23T12:00:00Z', error_log: 'Timeout on exchange API' },
+    // THIS IS THE FIX
+    suggestedActions: [
+      { playbookId: 'p-001', name: 'Restart Container', successRate: '91% Success', confidence: 0.92 },
+      { playbookId: 'p-002', name: 'Rollback Commit', successRate: '85% Success', confidence: 0.88 },
+    ]
+  },
+  // ... other incidents with the same fix
 ],
-// ... rest unchanged
