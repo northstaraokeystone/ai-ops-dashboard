@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 // Define the shape of a single KPI object
-interface Kpi {
+export interface Kpi {
   value: string;
   color: 'green' | 'red' | 'yellow';
   trend: 'up' | 'down' | 'stable';
@@ -13,8 +13,6 @@ interface KpiState {
   truthScore: Kpi;
   resilience: Kpi;
   agentHealth: Kpi;
-  // We will let components update the store directly for simplicity,
-  // removing the complex updateKPI function.
 }
 
 export const kpiStore = create<KpiState>(() => ({
@@ -39,11 +37,9 @@ export const kpiStore = create<KpiState>(() => ({
   },
 }));
 
-
-// Mock real-time updates (for demo purposes)
+// Mock real-time updates for demo purposes, but controlled
 const mockKpiUpdates = () => {
   setInterval(() => {
-    // This is a safer way to update a specific part of the state
     const newColor = Math.random() > 0.5 ? 'green' : 'yellow';
     kpiStore.setState(state => ({
       ...state,
@@ -53,10 +49,13 @@ const mockKpiUpdates = () => {
         badge: newColor === 'green' ? 'All healthy' : '1 at-risk'
       }
     }));
-  }, 7000); // Update agent health every 7 seconds
+  }, 7000);
 };
 
-// We will keep this disabled for the initial build to ensure stability.
-if (process.env.NODE_ENV === 'development-live-demo') {
+// Use Vite's special import.meta.env object to check the mode
+// This replaces the problematic `process.env.NODE_ENV`
+if (import.meta.env.MODE === 'development') {
+  // We can enable this for live local demos if we want, but it's
+  // disabled by default to ensure a stable, predictable UI for builds.
   // mockKpiUpdates();
 }

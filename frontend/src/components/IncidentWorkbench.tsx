@@ -1,12 +1,12 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'; // shadcn for modal per design_system_v1.md
-import ActionButton from './ActionButton'; // From T-2.11.1
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import ActionButton from './ActionButton';
 import { useStore } from 'zustand';
 import { incidentStore } from '../stores/incidentStore';
 
 interface IncidentWorkbenchProps {
-  incidentId: string; // Prop for fetch
-  trigger: React.ReactNode; // e.g., Table row click trigger
+  incidentId: string;
+  trigger: React.ReactNode;
 }
 
 const IncidentWorkbench: React.FC<IncidentWorkbenchProps> = ({ incidentId, trigger }) => {
@@ -14,7 +14,10 @@ const IncidentWorkbench: React.FC<IncidentWorkbenchProps> = ({ incidentId, trigg
   const incidents = useStore(incidentStore, (state) => state.incidents);
   const incident = incidents.find((inc) => inc.id === incidentId);
 
-  if (!incident) return null;
+  if (!incident) {
+    // Return null or a fallback UI if the incident isn't found
+    return null;
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -23,11 +26,21 @@ const IncidentWorkbench: React.FC<IncidentWorkbenchProps> = ({ incidentId, trigg
         <DialogHeader>
           <DialogTitle>Incident Workbench: {incident.action}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <pre aria-label="Raw payload" className="overflow-auto p-4 bg-gray-100 rounded">{JSON.stringify(incident.agentSupport, null, 2)}</pre>
+        <div id="incident-details" className="space-y-4 mt-4">
+          <h3 className="text-lg font-semibold">Raw Payload</h3>
+          <pre aria-label="Raw payload" className="text-xs p-4 bg-gray-800 text-white rounded-md overflow-auto max-h-60">{JSON.stringify(incident.agentSupport, null, 2)}</pre>
+
+          <h3 className="text-lg font-semibold">Suggested Actions</h3>
           <div className="flex flex-wrap gap-4">
             {incident.suggestedActions.map((action) => (
-              <ActionButton key={action.playbookId} {...action} />
+              <ActionButton
+                key={action.playbookId}
+                playbookId={action.playbookId}
+                // THIS IS THE FIX: Map 'playbookName' from our store to the prop the button expects
+                playbookName={action.playbookName}
+                successRate={action.successRate}
+                confidence={action.confidence}
+              />
             ))}
           </div>
         </div>
