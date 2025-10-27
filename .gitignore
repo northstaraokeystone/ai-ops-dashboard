@@ -45,3 +45,25 @@ test.db
 
 # Internal strategy and private documents - DO NOT COMMIT
 /private_codex/
+
+# -----------------------------------------------------------------------------
+# PROPRIETARY "ALPHA FLYWHEEL" - DO NOT COMMIT
+# This section contains our internal research data, processing pipeline,
+# and all related artifacts. This entire methodology is a core trade secret.
+# -----------------------------------------------------------------------------
+
+# Raw and Processed Data
+raw_research.txt
+analysis/corpus_v1/
+sanitized_corpus.jsonl
+corpus_audit_receipt.json
+
+# Pipeline Configuration
+sanitization_config.yaml
+custom_entities.yaml
+
+# Pipeline Dependencies
+scripts-requirements.txt
+
+# Pipeline Scripts
+scripts/sanitize.py
