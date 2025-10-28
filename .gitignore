@@ -45,7 +45,9 @@ test.db
 
 # Internal strategy and private documents - DO NOT COMMIT
 /private_codex/
-/analysis
+
+# Ignore the entire ClarityClean workspace
+/analysis/
 
 # -----------------------------------------------------------------------------
 # PROPRIETARY "ALPHA FLYWHEEL" - DO NOT COMMIT
@@ -53,18 +55,6 @@ test.db
 # and all related artifacts. This entire methodology is a core trade secret.
 # -----------------------------------------------------------------------------
 
-# Raw and Processed Data
-raw_research.txt
-analysis/corpus_v1/
-sanitized_corpus.jsonl
-corpus_audit_receipt.json
-
 # Pipeline Configuration
 sanitization_config.yaml
 custom_entities.yaml
-
-# Pipeline Dependencies
-scripts-requirements.txt
-
-# Pipeline Scripts
-scripts/sanitize.py

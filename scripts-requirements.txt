@@ -1,0 +1,12 @@
+spacy
+sentence-transformers
+torch
+PyYAML
+transformers
+torch
+accelerate
+pydantic
+unstructured
+bertopic
+hdbscan
+umap-learn
