@@ -45,6 +45,7 @@ test.db
 
 # Internal strategy and private documents - DO NOT COMMIT
 /private_codex/
+/analysis
 
 # -----------------------------------------------------------------------------
 # PROPRIETARY "ALPHA FLYWHEEL" - DO NOT COMMIT
