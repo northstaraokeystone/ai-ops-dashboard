@@ -1,0 +1,3 @@
+NAOK_FULCRUM_PRIME_KEY ="YOUR_SECRET_HERE"
+NAOK_FULCRUM_PRIME_KEY = "YOUR_SECRET_HERE"
+DATABASE_URL = "postgresql+psycopg2://fulcrum_user:fulcrum_pass@localhost:5432/fulcrum_db"

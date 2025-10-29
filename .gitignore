@@ -47,7 +47,8 @@ test.db
 /private_codex/
 
 # Ignore the entire ClarityClean workspace
-/analysis/
+/clarity_clean_analysis/
+/hindsight_analysis/
 
 # -----------------------------------------------------------------------------
 # PROPRIETARY "ALPHA FLYWHEEL" - DO NOT COMMIT
@@ -58,3 +59,4 @@ test.db
 # Pipeline Configuration
 sanitization_config.yaml
 custom_entities.yaml
+scripts-requirements.txt
