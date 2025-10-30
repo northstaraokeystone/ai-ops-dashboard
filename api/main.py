@@ -1,36 +1,28 @@
+# api/main.py
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
-# CORRECTED: Use relative import to correctly find the routers directory
-from .routers import integrity, gpu, roi, interaction  # <--- FIXED TYPO HERE
-from api.core.config import settings
-
-app = FastAPI(
-    title="AI Operations API",
-    description="ML monitoring APIs: integrity, GPU efficiency, ROI",
-    version="1.0.0",
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(integrity.router)
-app.include_router(gpu.router)
-app.include_router(roi.router)
-app.include_router(interaction.router)
+# Routers (package-absolute imports)
+from api.routers.ask import router as ask_router
+from api.routers.brief import router as brief_router
 
 
-@app.get("/")
-async def root():
-    return {"message": "AI Operations API", "version": "1.0.0"}
+def create_app() -> FastAPI:
+    app = FastAPI(
+        title="TruthRun API",
+        version="0.1.0",
+        docs_url="/docs",
+        redoc_url="/redoc",
+    )
+
+    @app.get("/healthz", tags=["ops"])
+    def healthz():
+        return {"status": "ok"}
+
+    # Include routes
+    app.include_router(ask_router)  # GET /ask
+    app.include_router(brief_router)  # GET /brief
+
+    return app
 
 
-@app.get("/health")
-async def health():
-    secrets_loaded = bool(settings.NAOK_FULCRUM_PRIME_KEY)
-    return {"status": "healthy", "secrets_loaded": secrets_loaded}
+app = create_app()
