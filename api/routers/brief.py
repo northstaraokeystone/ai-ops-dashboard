@@ -25,7 +25,6 @@ def _sha256(p: Path) -> str:
 def brief(q: str = Query(..., min_length=2), k: int = Query(5, ge=1, le=10)):
     cfg = yaml.safe_load(CFG_PATH.read_text())
     corpus_p = Path(cfg["paths"]["corpus"])
-    manifest_p = Path(cfg["paths"]["manifest"])
 
     # simple evidence: top-k chunks from retrieval
     results = ask_numpy(q, k)
