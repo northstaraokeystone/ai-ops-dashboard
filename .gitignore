@@ -60,3 +60,10 @@ test.db
 sanitization_config.yaml
 custom_entities.yaml
 scripts-requirements.txt
+
+# Augury local artifacts
+clarity_clean_analysis/00_source_data/
+clarity_clean_analysis/02_output/
+clarity_clean_analysis/03_receipts/
+clarity_clean_analysis/04_configs/augury.local.yaml
+__archive__/
