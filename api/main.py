@@ -7,6 +7,7 @@ from fastapi import Body, FastAPI, Header, status
 
 from fastapi.responses import JSONResponse
 
+
 # Tests expect this service to exist; we use it to hash payloads deterministically.
 from api.services.cryptography_service import CryptographyService
 

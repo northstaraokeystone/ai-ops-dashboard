@@ -127,3 +127,11 @@ def ask_numpy_with_stats(query: str, k: int = 5):
         "cache_size": after.currsize,
     }
     return res, stats
+
+
+def prewarm():
+    """Warm embedder + index so first request isn't cold."""
+    emb = _embedder()
+    _ = emb.encode(["warmup"])[0]  # load model
+    X, _, _ = _index()
+    _ = float((X[0] @ X[0]))  # touch BLAS/matrix
