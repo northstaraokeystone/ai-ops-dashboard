@@ -1,0 +1,21 @@
+{
+  "executive_summary": "Safety signals appear stable; evidence supports two actionable claims.",
+  "synthesized_response": [
+    {
+      "point": "Signal X remained within threshold this week.",
+      "supporting_evidence": [{"chunk_id": "s0000_0123"}, {"chunk_id": "s0000_0542"}],
+      "confidence": 0.84
+    },
+    {
+      "point": "Policy compliance remains ≥98% across monitored lanes.",
+      "supporting_evidence": [{"chunk_id": "s0000_0999"}, {"chunk_id": "s0000_0777"}],
+      "confidence": 0.81
+    }
+  ],
+  "contradictions_identified": [],
+  "next_questions_uncovered": [
+    "Which shard shows the lowest margin to threshold?",
+    "Any drift outliers in the last 48h?"
+  ],
+  "receipts": { "config_hash": "a1b2c3", "dataset_hash": "d4e5f6", "timestamp": "2025-10-31T21:38:36Z" }
+}

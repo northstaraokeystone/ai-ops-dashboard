@@ -1,0 +1,7 @@
+[
+  {"chunk_id":"s0000_0123","score":0.71,"snippet":"Weekly safety signal remained within 2%..."},
+  {"chunk_id":"s0000_0542","score":0.69,"snippet":"No anomalies detected in the rolling window..."},
+  {"chunk_id":"s0000_0999","score":0.66,"snippet":"Compliance events show a 98.4% pass rate..."},
+  {"chunk_id":"s0000_0777","score":0.65,"snippet":"Lane-level variance decreased week-over-week..."},
+  {"chunk_id":"s0000_0456","score":0.61,"snippet":"Outlier program flagged 0 incidents in period..."}
+]

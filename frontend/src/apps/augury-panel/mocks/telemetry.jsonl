@@ -1,0 +1,3 @@
+{"ts":"2025-10-31T21:37:13Z","route":"/ask","elapsed_ms":13280,"k":5,"cache_hit":0,"index_backend":"numpy","count":9472}
+{"ts":"2025-10-31T21:37:22Z","route":"/ask","elapsed_ms":1,"k":5,"cache_hit":1,"index_backend":"numpy","count":9472}
+{"ts":"2025-10-31T21:38:36Z","route":"/brief","elapsed_ms":74,"k":5,"status":200,"index_backend":"numpy","count":9472}
