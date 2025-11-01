@@ -9,3 +9,29 @@ version = "0.1.0"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["truthrun*"]
+
+# -----------------------------
+# Ruff (one set of tables only)
+# -----------------------------
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+src = ["scripts", "api", "truthrun"]
+
+[tool.ruff.lint]
+# Keep strict, but relax FastAPI defaults + exception chaining
+select = ["E", "F", "I", "B", "UP"]
+extend-ignore = ["B008", "B904"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["truthrun"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests can be chatty; allow long lines there
+"api/tests/**/*.py" = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true

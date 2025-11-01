@@ -30,9 +30,7 @@ def validate_data_integrity(records: list[dict], target_col: str | None = None) 
             + imbalance_score * weights["imbalance"]
         ) * 100
     else:
-        total_weight = (
-            weights["completeness"] + weights["schema"] + weights["duplicates"]
-        )
+        total_weight = weights["completeness"] + weights["schema"] + weights["duplicates"]
         score = (
             (
                 missing_score * weights["completeness"]

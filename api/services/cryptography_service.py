@@ -1,8 +1,8 @@
-import json
 import hashlib
+import json
 import uuid  # Import the uuid module
 from datetime import datetime  # Import the datetime module
-from typing import Any, Dict
+from typing import Any
 
 
 def _json_serializer(obj: Any) -> str:
@@ -22,11 +22,7 @@ def _recursive_sort_and_clean(data: Any) -> Any:
     Recursively sorts all keys in dictionaries and removes keys with None values.
     """
     if isinstance(data, dict):
-        return {
-            k: _recursive_sort_and_clean(v)
-            for k, v in sorted(data.items())
-            if v is not None
-        }
+        return {k: _recursive_sort_and_clean(v) for k, v in sorted(data.items()) if v is not None}
     if isinstance(data, list):
         return [_recursive_sort_and_clean(item) for item in data]
     return data
@@ -38,7 +34,7 @@ class CryptographyService:
     """
 
     @staticmethod
-    def generate_hash(data: Dict[str, Any]) -> str:
+    def generate_hash(data: dict[str, Any]) -> str:
         """
         Generates a deterministic hash for a given data dictionary.
         """

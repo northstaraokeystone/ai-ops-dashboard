@@ -1,19 +1,19 @@
 # api/schemas/dossier.py
+
 from pydantic import BaseModel
-from typing import List, Optional
 
 
 class Claim(BaseModel):
     text: str
-    chunk_ids: List[str]
+    chunk_ids: list[str]
     confidence: float = 0.5
-    notes: Optional[str] = None
+    notes: str | None = None
 
 
 class Contradiction(BaseModel):
     claim: str
     conflict_with_chunk_id: str
-    resolution_hypothesis: Optional[str] = None
+    resolution_hypothesis: str | None = None
 
 
 class Receipts(BaseModel):
@@ -28,7 +28,7 @@ class Receipts(BaseModel):
 
 class Dossier(BaseModel):
     executive_summary: str
-    claims: List[Claim]
-    contradictions_identified: List[Contradiction] = []
-    next_questions_uncovered: List[str] = []
+    claims: list[Claim]
+    contradictions_identified: list[Contradiction] = []
+    next_questions_uncovered: list[str] = []
     receipts: Receipts

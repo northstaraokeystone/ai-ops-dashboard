@@ -24,9 +24,7 @@ def analyze_gpu_efficiency(experiments: list[dict]) -> dict:
         worst_batch_time = max(batch_analysis.values())
         best_batch_time = min(batch_analysis.values())
         if worst_batch_time > 0:
-            savings_pct = (
-                (worst_batch_time - best_batch_time) / worst_batch_time
-            ) * 100
+            savings_pct = ((worst_batch_time - best_batch_time) / worst_batch_time) * 100
 
     return {
         "total_experiments": len(df),

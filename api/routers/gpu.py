@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+
 from ..schemas.gpu import GPUAnalysisRequest, GPUAnalysisResponse
 from ..services.gpu_service import analyze_gpu_efficiency
 

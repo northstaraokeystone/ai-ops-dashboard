@@ -1,6 +1,5 @@
 import hashlib
 from datetime import datetime
-from typing import Tuple
 
 from sqlalchemy.orm import Session
 
@@ -8,18 +7,12 @@ from api.models import InteractionLog
 from api.schemas.interaction import InteractionCreate
 
 
-def create_interaction(
-    db: Session, interaction: InteractionCreate
-) -> Tuple[InteractionLog, bool]:
+def create_interaction(db: Session, interaction: InteractionCreate) -> tuple[InteractionLog, bool]:
     payload_bytes = interaction.payload.encode("utf-8")
     payload_hash = hashlib.sha256(payload_bytes).hexdigest()
 
     # Idempotency check
-    existing = (
-        db.query(InteractionLog)
-        .filter(InteractionLog.payload_hash == payload_hash)
-        .first()
-    )
+    existing = db.query(InteractionLog).filter(InteractionLog.payload_hash == payload_hash).first()
     if existing:
         return existing, False
 

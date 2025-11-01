@@ -29,12 +29,7 @@ def _index():
     p_index = cfg["paths"].get("index", "")
     p_idmap = cfg["paths"].get("id_map", "")
     p_corpus = cfg["paths"].get("corpus", "")
-    if (
-        not p_index
-        or not Path(p_index).exists()
-        or not p_idmap
-        or not Path(p_idmap).exists()
-    ):
+    if not p_index or not Path(p_index).exists() or not p_idmap or not Path(p_idmap).exists():
         # CI fallback: small dummy index (64 rows, exact cosine queries)
         n, d = 64, int(cfg["embeddings"]["dim"])
         X = np.zeros((n, d), dtype="float32")
@@ -109,9 +104,7 @@ def _normalize_q(s: str) -> str:
 def ask_numpy(query: str, k: int = 5):
     qn = _normalize_q(query)
     res = _ask_cached(qn, k)
-    return [
-        {"chunk_id": cid, "score": score, "text": text} for (cid, score, text) in res
-    ]
+    return [{"chunk_id": cid, "score": score, "text": text} for (cid, score, text) in res]
 
 
 def ask_numpy_with_stats(query: str, k: int = 5):
@@ -134,4 +127,4 @@ def prewarm():
     emb = _embedder()
     _ = emb.encode(["warmup"])[0]  # load model
     X, _, _ = _index()
-    _ = float((X[0] @ X[0]))  # touch BLAS/matrix
+    _ = float(X[0] @ X[0])  # touch BLAS/matrix

@@ -1,13 +1,14 @@
 import uuid
+
 from sqlalchemy import (
+    JSON,
     Column,
-    Integer,
     DateTime,
+    Integer,
+    LargeBinary,
+    PrimaryKeyConstraint,
     Text,
     UniqueConstraint,
-    PrimaryKeyConstraint,
-    LargeBinary,
-    JSON,
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base
@@ -54,8 +55,6 @@ class InteractionLog(Base):
 
     __table_args__ = (
         PrimaryKeyConstraint("id", "emitted_at_utc", name="pk_interaction_log"),
-        UniqueConstraint(
-            "payload_hash", "emitted_at_utc", name="uq_payload_hash_emitted_at_utc"
-        ),
+        UniqueConstraint("payload_hash", "emitted_at_utc", name="uq_payload_hash_emitted_at_utc"),
         {"postgresql_partition_by": "RANGE (emitted_at_utc)"},
     )

@@ -1,9 +1,11 @@
 # ai-ops-dashboard/api/tests/test_merkle.py
-import pytest
-from truthrun.merkle import build_merkle_tree
-import os
 import json
+import os
 from datetime import datetime
+
+import pytest
+
+from truthrun.merkle import build_merkle_tree
 
 
 @pytest.fixture
@@ -58,9 +60,7 @@ def test_single_event_batch_returns_hash_of_that_event():
 
     import hashlib
 
-    expected_hash = hashlib.sha256(
-        json.dumps(single_event[0], sort_keys=True).encode("utf-8")
-    ).digest()
+    expected_hash = hashlib.sha256(json.dumps(single_event[0], sort_keys=True).encode("utf-8")).digest()
 
     root = build_merkle_tree(single_event)
     assert root == expected_hash

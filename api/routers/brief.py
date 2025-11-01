@@ -1,11 +1,12 @@
 # api/routers/brief.py
-from fastapi import APIRouter, Query
-from pathlib import Path
-from datetime import datetime, timezone
-import yaml
 import hashlib
+from datetime import UTC, datetime
+from pathlib import Path
 
-from api.schemas.dossier import Dossier, Claim, Receipts
+import yaml
+from fastapi import APIRouter, Query
+
+from api.schemas.dossier import Claim, Dossier, Receipts
 from api.services.retrieval_numpy import ask_numpy  # reuse retrieval
 
 router = APIRouter(tags=["briefs"])
@@ -47,7 +48,7 @@ def brief(q: str = Query(..., min_length=2), k: int = Query(5, ge=1, le=10)):
     receipts = Receipts(
         config_hash=hashlib.sha256(CFG_PATH.read_bytes()).hexdigest(),
         dataset_hash=_sha256(corpus_p),
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
     )
 
     dossier = Dossier(

@@ -1,23 +1,22 @@
 # api/main.py
 from __future__ import annotations
 
-from typing import Optional
-import os
-import json
 import hashlib
+import json
+import os
 import pathlib
-from time import perf_counter
 from datetime import datetime
+from time import perf_counter
 
 from fastapi import Body, FastAPI, Header, status
 from fastapi.responses import JSONResponse
 
-# Tests expect this service to exist; we use it to hash payloads deterministically.
-from api.services.cryptography_service import CryptographyService
-
 # Routers (feature routes)
 from api.routers.ask import router as ask_router
 from api.routers.brief import router as brief_router
+
+# Tests expect this service to exist; we use it to hash payloads deterministically.
+from api.services.cryptography_service import CryptographyService
 
 # Optional YAML (for reading index backend); safe fallback if missing
 try:
@@ -50,10 +49,8 @@ def _hydrate_telem():
     if _TELEM["index_backend"] is None:
         try:
             if yaml:
-                cfg = yaml.safe_load(open(CFG_PATH, "r", encoding="utf-8"))
-                _TELEM["index_backend"] = (cfg.get("index") or {}).get(
-                    "backend", "numpy"
-                )
+                cfg = yaml.safe_load(open(CFG_PATH, encoding="utf-8"))
+                _TELEM["index_backend"] = (cfg.get("index") or {}).get("backend", "numpy")
             else:
                 _TELEM["index_backend"] = "numpy"
         except Exception:
@@ -61,7 +58,7 @@ def _hydrate_telem():
     # corpus count from ids file if available
     if _TELEM["count"] is None:
         try:
-            _TELEM["count"] = len(json.load(open(IDS_PATH, "r", encoding="utf-8")))
+            _TELEM["count"] = len(json.load(open(IDS_PATH, encoding="utf-8")))
         except Exception:
             _TELEM["count"] = None
 
@@ -147,8 +144,8 @@ def _make_response(payload_hash: str) -> dict:
 @app.post("/interaction/", status_code=status.HTTP_201_CREATED, tags=["ops"])
 def interaction_create(
     item: dict = Body(...),
-    idempotency_key: Optional[str] = Header(None, convert_underscores=False),
-    x_idempotency_key: Optional[str] = Header(None, convert_underscores=False),
+    idempotency_key: str | None = Header(None, convert_underscores=False),
+    x_idempotency_key: str | None = Header(None, convert_underscores=False),
 ):
     # Tests post the same JSON twice; we key strictly by payload hash
     payload_hash = _hash_payload(item)
@@ -156,9 +153,7 @@ def interaction_create(
         # Second submission → 200 OK
         return JSONResponse(status_code=200, content=_make_response(payload_hash))
     _store[payload_hash] = item
-    return _make_response(
-        payload_hash
-    )  # First submission → 201 Created (from decorator)
+    return _make_response(payload_hash)  # First submission → 201 Created (from decorator)
 
 
 # Include existing feature routes

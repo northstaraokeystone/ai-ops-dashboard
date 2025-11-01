@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from api.core.config import settings
 
 # Create the SQLAlchemy engine as the single source of truth for database connections.

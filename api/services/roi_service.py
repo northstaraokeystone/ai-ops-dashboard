@@ -15,7 +15,7 @@ def simulate_roi(config: dict) -> dict:
             "net_roi": float(b),
             "cum_roi": float(np.sum(net_benefit[:m])),
         }
-        for m, b in zip(months, net_benefit)
+        for m, b in zip(months, net_benefit, strict=True)
     ]
 
     breach_mask = net_benefit < retraining_cost

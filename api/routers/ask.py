@@ -1,6 +1,8 @@
 # api/routers/ask.py
-from fastapi import APIRouter, Query
 from time import perf_counter
+
+from fastapi import APIRouter, Query
+
 from api.services.retrieval_numpy import ask_numpy, ask_numpy_with_stats
 
 router = APIRouter(tags=["retrieval"])

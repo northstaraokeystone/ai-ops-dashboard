@@ -1,9 +1,9 @@
 # ai-ops-dashboard/api/truthrun/merkle.py
 import hashlib
-import os
-import numpy as np
 import json
-from typing import List, Optional
+import os
+
+import numpy as np
 
 
 def hash_bytes(data: bytes) -> bytes:
@@ -11,7 +11,7 @@ def hash_bytes(data: bytes) -> bytes:
     return hashlib.sha256(data).digest()
 
 
-def build_merkle_tree(events: List[dict]) -> Optional[bytes]:
+def build_merkle_tree(events: list[dict]) -> bytes | None:
     """Build binary Merkle tree root from event batch."""
     if not os.getenv("MERKLE_ANCHOR_ENABLED", "False") == "True":
         return None  # No-op if flagged off

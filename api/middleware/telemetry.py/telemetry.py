@@ -1,10 +1,11 @@
-from time import perf_counter
-import os
-import json
 import hashlib
-import yaml
+import json
+import os
 import pathlib
 from datetime import datetime
+from time import perf_counter
+
+import yaml
 
 CONFIG_PATH = pathlib.Path("clarity_clean_analysis/04_configs/augury.local.yaml")
 IDS_PATH = pathlib.Path("clarity_clean_analysis/02_output/index.ids.json")
@@ -20,12 +21,12 @@ CACHE = {
 
 def _load_cfg():
     try:
-        cfg = yaml.safe_load(open(CONFIG_PATH, "r", encoding="utf-8"))
+        cfg = yaml.safe_load(open(CONFIG_PATH, encoding="utf-8"))
         CACHE["index_backend"] = (cfg.get("index") or {}).get("backend", "numpy")
     except Exception:
         CACHE["index_backend"] = "numpy"
     try:
-        CACHE["count"] = len(json.load(open(IDS_PATH, "r", encoding="utf-8")))
+        CACHE["count"] = len(json.load(open(IDS_PATH, encoding="utf-8")))
     except Exception:
         CACHE["count"] = None
 
