@@ -17,6 +17,8 @@
     "@tanstack/react-table": "^8.19.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.418.0",
     "react": "^19.1.1-beta-a4bfa353a-20240723",
     "react-dom": "^19.1.1-beta-a4bfa353a-20240723",
