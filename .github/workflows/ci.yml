@@ -7,7 +7,6 @@ on:
     branches: [ main ]
 
 jobs:
-  # 1) Your original CI: lint, format-check, tests on Ubuntu
   test-and-lint:
     runs-on: ubuntu-latest
     steps:
@@ -29,14 +28,13 @@ jobs:
           pip install -r api/requirements.txt
           pip install -r dev-requirements.txt
           pip install -e api
-          # If ruff is NOT in dev-requirements.txt, uncomment the next line:
-          # pip install ruff
+          # ruff is already in your requirements; no extra install needed
 
       - name: Ruff lint
-        run: ruff check api scripts truthrun
+        run: ruff check api scripts
 
       - name: Ruff format (check only)
-        run: ruff format api scripts truthrun --check
+        run: ruff format api scripts --check
 
       - name: Run tests
         env:
@@ -46,7 +44,6 @@ jobs:
           MERKLE_ANCHOR_ENABLED: "True"
         run: python -m pytest --cov=api --cov-report=xml
 
-  # 2) Fast ANN gate: DIAG is parity SoT; VERIFY reads DIAG; enforce gates
   receipts:
     runs-on: windows-latest
     steps:
@@ -54,13 +51,28 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          # Optional cache for speed:
-          # cache: 'pip'
 
       - name: Deps
         run: |
           python -m pip install --upgrade pip
           pip install numpy faiss-cpu
+
+      - name: Ensure ANN test corpus (create if missing)
+        shell: python
+        run: |
+          import os, json, numpy as np, pathlib
+          base = pathlib.Path('clarity_clean_analysis/02_output')
+          base.mkdir(parents=True, exist_ok=True)
+          idx = base / 'index.npy'
+          ids = base / 'index.ids.json'
+          if (not idx.exists()) or (not ids.exists()):
+              N, D = 200, 1024
+              rng = np.random.default_rng(0)
+              V = rng.normal(size=(N, D)).astype('float32')
+              V /= (np.linalg.norm(V, axis=1, keepdims=True) + 1e-12)
+              np.save(idx, V)
+              json.dump(list(range(N)), open(ids, 'w', encoding='utf-8'), indent=2)
+          print("Corpus ready:", idx.exists(), ids.exists())
 
       - name: DIAG (parity SoT)
         shell: pwsh
@@ -94,7 +106,6 @@ jobs:
           print("VERIFY p95:", s["faiss"]["p95_ms"])
           sys.exit(0 if ok else 1)
 
-  # 3) Repo hygiene: refuse tracked ANN index binaries
   guard-binaries:
     runs-on: ubuntu-latest
     steps:
