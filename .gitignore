@@ -73,3 +73,6 @@ __archive__/
 # Hugging Face / sentence-transformers cache
 .hf_cache/
 **/.hf_cache/
+# --- ANN binaries (do not commit) ---
+clarity_clean_analysis/02_output/*.ivf
+clarity_clean_analysis/02_output/*.bin

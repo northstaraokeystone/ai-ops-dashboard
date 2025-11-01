@@ -1,0 +1,20 @@
+{
+  "numpy": {
+    "N": 9472,
+    "D": 1024
+  },
+  "gates": {
+    "overlap_threshold": 0.99,
+    "p95_threshold_ms": 150
+  },
+  "gates_pass": {
+    "faiss": true
+  },
+  "faiss": {
+    "overlap_at_10": 1.0,
+    "p95_ms": 3.50343501631869,
+    "params": {
+      "source": "diag+local_bench"
+    }
+  }
+}
